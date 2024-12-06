@@ -6,6 +6,7 @@ import dev.formation.user_service.dto.UserDTO;
 import dev.formation.user_service.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ public class DataGenerator implements CommandLineRunner {
     private final Faker faker = new Faker(new Random());
     private final Random random = new Random();
 
+
     @Override 
     public void run(String... args) throws Exception {
         generateUsers(15);
@@ -36,8 +38,8 @@ public class DataGenerator implements CommandLineRunner {
 
         for (int i = 0; i < count; i++) {
             UserDTO userDTO = new UserDTO();
-            userDTO.setEmail(faker.internet().emailAddress());
-            userDTO.setPassword(faker.internet().password()); // Vous pouvez appliquer des règles de complexité si nécessaire
+            userDTO.setUsername(faker.internet().emailAddress());
+            userDTO.setPassword("caca"); // Vous pouvez appliquer des règles de complexité si nécessaire
 
             users.add(userDTO);
         }

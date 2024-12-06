@@ -2,7 +2,7 @@ package dev.formation.user_service.mapper;
 
 
 import dev.formation.user_service.dto.UserDTO;
-import dev.formation.user_service.entity.User;
+import dev.formation.user_service.model.User;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

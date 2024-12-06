@@ -1,0 +1,17 @@
+dev\formation\user_service\model\User.class
+dev\formation\user_service\mapper\UserMapperImpl.class
+dev\formation\user_service\repository\UserRepository.class
+dev\formation\user_service\controller\UserController.class
+dev\formation\user_service\dto\LoginRequest.class
+dev\formation\user_service\utils\JwtAuthenticationFilter.class
+dev\formation\user_service\config\SecurityConfig.class
+dev\formation\user_service\dto\JwtResponse.class
+dev\formation\user_service\UserServiceApplication.class
+dev\formation\user_service\dto\UserDTO.class
+dev\formation\user_service\service\CustomUserDetailsService.class
+dev\formation\user_service\model\User$UserBuilder.class
+dev\formation\user_service\mapper\UserMapper.class
+dev\formation\user_service\service\UserService.class
+dev\formation\user_service\controller\AuthController.class
+dev\formation\user_service\utils\DataGenerator.class
+dev\formation\user_service\utils\JwtUtils.class

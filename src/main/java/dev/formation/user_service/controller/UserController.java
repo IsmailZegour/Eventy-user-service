@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -23,9 +27,13 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        // Vérification via le token JWT
+        String currentUsername = getCurrentUsername();
+
         return userService.getUserById(id)
+                .filter(user -> user.getUsername().equals(currentUsername)) // Vérifie si l'utilisateur demandé est le même que celui du token
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.status(403).build()); // Retourne un 403 si non autorisé
     }
 
     @PostMapping
@@ -35,13 +43,37 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
-        return ResponseEntity.ok(userService.updateUser(id, userDTO));
+        // Vérification via le token JWT
+        String currentUsername = getCurrentUsername();
+
+        return userService.getUserById(id)
+                .filter(user -> user.getUsername().equals(currentUsername)) // Vérifie si l'utilisateur est valide
+                .map(existingUser -> ResponseEntity.ok(userService.updateUser(id, userDTO)))
+                .orElse(ResponseEntity.status(403).build()); // Retourne un 403 si non autorisé
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+        // Vérification via le token JWT
+        String currentUsername = getCurrentUsername();
+
+        return userService.getUserById(id)
+                .filter(user -> user.getUsername().equals(currentUsername)) // Vérifie si l'utilisateur a le droit de supprimer
+                .map(user -> {
+                    userService.deleteUser(id);
+                    return ResponseEntity.noContent().<Void>build(); // Spécifie explicitement Void
+                })
+                .orElse(ResponseEntity.status(403).<Void>build()); // Spécifie explicitement Void
+    }
+
+
+    private String getCurrentUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            return ((UserDetails) authentication.getPrincipal()).getUsername();
+        }
+        return null;
     }
 }
+
 
